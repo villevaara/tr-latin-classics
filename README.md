@@ -12,9 +12,9 @@ Data preparation for BLAST run of set of TEI XML texts in latin from classical a
 
 The scripts have been tested with Python 3.10.6.
 
-0. Run *create_datadirs.sh* to create the empty data directories.
-1. Download the required data package from CSC IDA (`Corpus2_PL_new.7z`, found under *COMHIS*), extrac it to `data/raw`.
-2. Install packages in `requirements.txt` with pip.
-2. Run *datawrangler.py* to create the data for BLAST.
-3. Run *metadata_extractor.py* to create the metadata csv.
-4. Proceed with BLAST.
+1. Run *create_datadirs.sh* to create the empty data directories.
+2. Download the required data package from CSC IDA (`Corpus2_PL_new.7z`, found under *COMHIS*), extract it to `data/raw`.
+3. Install packages in `requirements.txt` with pip.
+4. Run *datawrangler.py* to create the data for BLAST.
+5. Run *metadata_extractor.py* to create the metadata csv.
+6. Proceed with BLAST.
