@@ -32,9 +32,7 @@ for file in allfiles:
     thisdata.append({
         'text': fulltxt,
         'doc_id': file})
-    outfile = 'data/work/txt/' + file.split('.')[0] + ".txt"
-    with open(outfile, 'w') as txtf:
-        txtf.write(fulltxt)
+
 
 # Save lengths of the texts for determining split size for BLAST.
 lengths = [len(t['text']) for t in thisdata]
