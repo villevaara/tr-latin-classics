@@ -21,9 +21,9 @@ def write_json_results(outdata, jsonfile, compress=True):
 outpath = 'data/final/'
 
 thisdata = []
-allfiles = os.listdir('data/raw')
+allfiles = os.listdir('data/raw/corpus-corporum')
 for file in allfiles:
-    xmlfile = 'data/raw/' + file
+    xmlfile = 'data/raw/corpus-corporum/' + file
     tree = etree.parse(xmlfile)
     root = tree.getroot()
     ns = {'ns':'http://www.tei-c.org/ns/1.0'}
