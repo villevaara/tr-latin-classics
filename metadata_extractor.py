@@ -14,7 +14,22 @@ def get_item_meta(desc):
     for k, v in descdict.items():
         if k == '@xmlns':
             continue
-        finalmeta[k] = v
+        else:
+            finalmeta[k] = v
+    for k, v in finalmeta.items():
+        if k == 'titleStmt':
+            final_v = list()
+            if type(v['title']) == list:
+                for i in v['title']:
+                    if type(i) == str:
+                        final_v.append(i)
+                    elif type(i) == dict:
+                        for key in i.keys():
+                            if key == '#text':
+                                final_v.append(i[key])
+            if len(final_v) > 0:
+                v['title'] = '; '.join(final_v)
+
     df = pd.json_normalize(finalmeta, sep='_')
     normalized_d = df.to_dict(orient='records')[0]
     return normalized_d
@@ -22,9 +37,9 @@ def get_item_meta(desc):
 
 metadata = []
 metakeys = set()
-allfiles = os.listdir('data/raw')
+allfiles = os.listdir('data/raw/corpus-corporum/')
 for file in allfiles:
-    xmlfile = 'data/raw/' + file
+    xmlfile = 'data/raw/corpus-corporum/' + file
     tree = etree.parse(xmlfile)
     root = tree.getroot()
     ns = {'ns':'http://www.tei-c.org/ns/1.0'}
