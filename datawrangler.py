@@ -2,6 +2,7 @@ import os
 from lxml import etree
 import json
 import gzip
+from helpers import get_clean_id
 
 
 def write_json_results(outdata, jsonfile, compress=True):
@@ -29,10 +30,11 @@ for file in allfiles:
     ns = {'ns':'http://www.tei-c.org/ns/1.0'}
     text = root.find('ns:text', ns)
     fulltxt = ''.join(text.itertext())
+    this_id = get_clean_id(file.split('.xml')[0])
     thisdata.append({
         'text': fulltxt,
-        'doc_id': file})
-    outfile = 'data/work/txt/' + file.split('.')[0] + ".txt"
+        'doc_id': this_id})
+    outfile = 'data/work/txt/' + this_id + ".txt"
     with open(outfile, 'w') as txtf:
         txtf.write(fulltxt)
 

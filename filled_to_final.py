@@ -2,6 +2,7 @@ import tarfile
 import jsonlines
 from glob import glob
 from tqdm import tqdm
+from helpers import get_clean_id
 
 
 def get_single_tar_contents(tarpath, verbose=False):
@@ -44,11 +45,11 @@ def get_text_segment(textfile_id, start, end):
 
 def set_item_indices(filled_item):
     for prefix in ['text1', 'text2']:
-        add_amount = int(filled_item[(prefix + '_id')].split('.xml__')[-1].split('_')[0])
+        add_amount = int(filled_item[(prefix + '_id')].split('__')[-1].strip("_").split('_')[0])
         filled_item[prefix + '_text_start'] = filled_item[prefix + '_text_start'] + add_amount
         filled_item[prefix + '_text_end'] = filled_item[prefix + '_text_end'] + add_amount
-        filled_item[prefix + '_id'] = filled_item[prefix + '_id'].split('__')[0]
-        filled_item[prefix + '_source'] = filled_item[prefix + '_id'].split('__')[0][:-4] + ".txt"
+        filled_item[prefix + '_id'] = get_clean_id(filled_item[prefix + '_id'].split('__')[0].strip("_"))
+        filled_item[prefix + '_source'] = get_clean_id(filled_item[prefix + '_id'].split('__')[0].strip("_")) + ".txt"
 
 
 def write_final_output(outputdata, fname):
@@ -56,7 +57,7 @@ def write_final_output(outputdata, fname):
         writer.write_all(outputdata)
 
 
-filled_qpi100_files = glob("data/work/filled/*.tar.gz")
+filled_qpi100_files = glob("data/blast_results_filled/*.tar.gz")
 write_buffer = list()
 writer_i = 0
 write_now = False
@@ -65,6 +66,7 @@ numlines = 1000000
 
 
 for archive in tqdm(filled_qpi100_files):
+    print(archive)
     new_data = get_single_tar_jsonlines(archive)
     for item in new_data:
         set_item_indices(item)
@@ -73,7 +75,7 @@ for archive in tqdm(filled_qpi100_files):
     # if enough data in buffer, write and empty it
     if len(write_buffer) >= numlines:
         write_now = True
-    if counter == len(filled_qpi100_files) -1:
+    if counter == len(filled_qpi100_files) - 1:
         write_now = True
     if write_now:
         outfname = 'data/final_out/latin_tr_' + str(writer_i) + '.jsonl'

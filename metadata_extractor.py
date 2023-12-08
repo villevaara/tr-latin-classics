@@ -5,6 +5,8 @@ import gzip
 import xmltodict
 import pandas as pd
 import csv
+from glob import glob
+from helpers import get_clean_id
 
 
 def get_item_meta(desc):
@@ -45,11 +47,27 @@ for file in allfiles:
     ns = {'ns':'http://www.tei-c.org/ns/1.0'}
     filedesc = root.find('.//ns:fileDesc', ns)
     item_meta = get_item_meta(filedesc)
-    item_meta['doc_id'] = file
+    item_meta['doc_id'] = get_clean_id(file.split('.xml')[0])
+    item_meta['chronology'] = file.split('_')[0]
+    item_meta['is_bible'] = False
     metadata.append(item_meta)
     metakeys.update(list(item_meta.keys()))
 
 metakeys = sorted(list(metakeys))
+
+biblemeta = list()
+biblefiles = glob('data/work/txt/Vulgata*')
+for bibfile in biblefiles:
+    metaentry = dict()
+    for item in metakeys:
+        metaentry[item] = None
+    metaentry['is_bible'] = True
+    metaentry['chronology'] = "0"
+    metaentry['doc_id'] = get_clean_id(bibfile.split('/')[-1].split('.txt')[0])
+    metaentry['titleStmt_title'] = bibfile.split('/')[-1].split('.')[0].replace('_', ' ')
+    biblemeta.append(metaentry)
+
+metadata.extend(biblemeta)
 
 with open('data/final/metadata.csv', 'w') as csvf:
     fieldnames = list(metakeys)
